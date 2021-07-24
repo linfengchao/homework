@@ -1,0 +1,21 @@
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"pkg/errors"
+)
+
+func main(){
+//dao 层中当遇到一个 sql.ErrNoRows 的时候，是否应该 Wrap 这个 error，抛给上层。为什么，应该怎么做请写出代码？
+//应该要wrap这个error 抛给上层因为需要这册只能知道ErrNoRows错误 
+//需要逐层加入足够的错误信息让最上层打印log 这样查bug的时候能迅速定位问题
+    var db *sql.DB
+	var userID int
+	row := db.QueryRow("select id from users where id = ?", 1)
+	err:=row.Scan(&userID)
+	if err != nil {
+        return errors.Wrap(err, "queryRow failed")
+    }
+     return nil
+}
